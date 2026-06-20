@@ -1,16 +1,27 @@
-name: Telegram Test
+name: Restock Monitor
 
 on:
-  workflow_dispatch:
+workflow_dispatch:
+
+schedule:
+- cron: "*/30 * * * *"
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+monitor:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Send Telegram
-        run: |
-          curl -s \
-          "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
-          -d chat_id="${{ secrets.CHAT_ID }}" \
-          -d text="GitHub Actions 테스트 성공"
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - uses: actions/setup-python@v5
+    with:
+      python-version: "3.11"
+
+  - run: pip install requests
+
+  - run: python app.py
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_ID: ${{ secrets.CHAT_ID }}
+```
